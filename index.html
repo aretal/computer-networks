@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Prim 6 Quiz - Amgad International School</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-option {
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .btn-option:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-option.correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+            font-weight: 600;
+        }
+
+        .btn-option.incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="w-full max-w-2xl bg-white rounded-2xl p-6 md:p-8 card-shadow transition-all duration-300">
+        
+        <!-- Header Information -->
+        <header class="text-center border-b border-slate-100 pb-5 mb-6">
+            <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold px-4 py-1.5 rounded-full text-xs sm:text-sm tracking-wide uppercase mb-2">
+                <span>🏫</span> Amgad International School
+            </div>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">Unit 1 - Lesson 1: Computer Networks</h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+                Developed by: <span class="text-slate-700 font-semibold">Eng. Asmaa Qamar Mohamed</span>
+            </p>
+        </header>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="text-center py-4">
+            <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                💻
+            </div>
+            <h2 class="text-lg font-bold text-slate-800 mb-2">Ready to test your ICT knowledge?</h2>
+            <p class="text-slate-600 text-sm max-w-md mx-auto mb-6">
+                This interactive exam contains 30 Grade 6 questions covering Networks, Switches, Routers, Modems, and Artificial Intelligence.
+            </p>
+            <div class="bg-slate-50 p-4 rounded-xl max-w-sm mx-auto mb-6 text-left text-xs sm:text-sm text-slate-600 space-y-1.5 border border-slate-100">
+                
+                <div class="flex items-center gap-2">🎯 <span>30 Questions Total</span></div>
+            </div>
+            <button id="btn-start" onclick="startQuiz()" class="w-full max-w-xs bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform active:scale-95 text-base">
+                🚀 Start Quiz Now
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 rounded-full h-2.5 mb-5 overflow-hidden">
+                <div id="progress-bar" class="bg-blue-500 h-2.5 rounded-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <!-- Quiz Header Stats -->
+            <div class="flex justify-between items-center text-xs sm:text-sm font-semibold text-slate-500 mb-4 pb-2 border-b border-slate-100">
+                <span id="q-counter" class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">Question 1/30</span>
+                <span id="score-counter" class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg">Score: 0</span>
+            </div>
+
+            <!-- Question Display Area -->
+            <div class="mb-6">
+                <h3 id="question-text" class="text-base sm:text-lg font-bold text-slate-800 mb-4 leading-snug">
+                    Question text loading...
+                </h3>
+
+                <!-- Options / Fill Box -->
+                <div id="options-box" class="space-y-3"></div>
+            </div>
+
+            <!-- Dynamic Feedback -->
+            <div id="feedback-msg" class="min-h-[2rem] text-center font-bold text-sm sm:text-base mb-4 transition-all"></div>
+
+            <!-- Next Button -->
+            <button id="btn-next" onclick="nextQuestion()" class="hidden w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 text-sm sm:text-base">
+                <span>Next Question</span> ➔
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden text-center py-4">
+            <div id="result-icon" class="text-5xl mb-3">🎉</div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-1">Quiz Completed!</h2>
+            <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-4">Amgad International School</p>
+
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 max-w-xs mx-auto mb-6">
+                <p class="text-xs text-blue-600 font-bold uppercase tracking-wider">Your Score</p>
+                <div id="final-score" class="text-4xl sm:text-5xl font-black text-blue-600 my-2">0 / 30</div>
+                <p id="final-percentage" class="text-sm font-semibold text-blue-800">Percentage: 0%</p>
+            </div>
+
+            <p id="final-status-msg" class="text-slate-700 font-semibold mb-6 text-base">
+                Great job!
+            </p>
+
+            <button onclick="restartQuiz()" class="w-full max-w-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-600/20 transition-all active:scale-95 text-base">
+                🔄 Restart Quiz
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        let audioCtx = null;
+
+        // Initialize Web Audio API for fast response without network sound loading delays
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(isCorrect) {
+            try {
+                if (!audioCtx) return;
+                
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (isCorrect) {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.12);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(160, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.2);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }
+            } catch (e) {
+                console.log("Audio notice:", e);
+            }
+        }
+
+        const questions = [
+            { q: "1. ____________ is/are a group of computer devices that are connected to each other for a common purpose.", opts: ["Devices", "Networks", "Routers", "Software"], ans: 1 },
+            { q: "2. A school computer lab is an example of a ____________.", opts: ["Service provider", "LAN (Local Area Network)", "Wi-Fi connection", "Global network"], ans: 1 },
+            { q: "3. ____________ is a comprehensive term for applications that perform complex tasks simulating human thinking.", opts: ["Artificial intelligence (AI)", "Application", "Modem", "Router"], ans: 0 },
+            { q: "4. ____________ networks connect devices using Wi-Fi without physical cables.", opts: ["Wired", "Wireless", "Software", "Both a and b"], ans: 1 },
+            { q: "5. Through ____________, you can transfer data using physical wires and cables.", opts: ["Wireless networks", "Wi-Fi", "Wired networks", "Emails"], ans: 2 },
+            { q: "6. A router connects devices through ____________.", opts: ["Wi-Fi", "Cables", "USB", "Both Wi-Fi and cables"], ans: 3 },
+            { q: "7. Wireless networks connect devices primarily using ____________ signals.", opts: ["LAN", "Wi-Fi", "Modem", "Switch"], ans: 1 },
+            { q: "8. What is the correct abbreviation for Artificial Intelligence?", opts: ["AR", "ALT", "IA", "AI"], ans: 3 },
+            { q: "9. A computer network connected without physical wiring is called ____________.", opts: ["Physical wiring", "Wireless network", "Ports", "Cables"], ans: 1 },
+            { q: "10. Cables and wires in wired networks are plugged into special holes called ____________.", opts: ["Ports", "Wi-Fi", "Switches", "Modems"], ans: 0 },
+            { q: "11. ____________ are intelligent network devices that send data to a specific device on the network.", opts: ["Switches", "Hubs", "Modems", "Cables"], ans: 0 },
+            { q: "12. Artificial Intelligence (AI) can be used to ____________.", opts: ["Write articles", "Generate videos", "Predict network faults", "All of the above"], ans: 3 },
+            { q: "13. A ____________ converts the signal from the Internet Service Provider (ISP) into a digital signal.", opts: ["Modem", "Router", "Switch", "Scanner"], ans: 0 },
+            { q: "14. In networking terminology, LAN stands for ____________.", opts: ["Long Area Network", "Local Area Network", "Large Area Network", "Linked Area Network"], ans: 1 },
+            { q: "15. Internet Service Provider is commonly abbreviated as ____________.", opts: ["GPS", "USB", "ISP", "GRP"], ans: 2 },
+
+            // True / False Questions
+            { q: "16. [True / False] A computer does not need any network connection devices to transfer data to another computer.", opts: ["True", "False"], ans: 1 },
+            { q: "17. [True / False] Devices can connect to a network wirelessly using Wi-Fi.", opts: ["True", "False"], ans: 0 },
+            { q: "18. [True / False] Wireless networks require physical cables and wires plugged into every device.", opts: ["True", "False"], ans: 1 },
+            { q: "19. [True / False] Ports are special wires that connect devices directly to satellites.", opts: ["True", "False"], ans: 1 },
+            { q: "20. [True / False] Artificial Intelligence (AI) performs complex tasks that mimic human intelligence and problem-solving.", opts: ["True", "False"], ans: 0 },
+
+            // Fill-in-the-blank Questions
+            { type: "fill", q: "21. ____________ works to imitate human sounds when provided with a person's voice tone sample. (Type the 2-letter abbreviation)", ans: "ai" },
+            { type: "fill", q: "22. Switches send data to a ____________ device on a network rather than broadcasting to all devices.", ans: "specific" },
+            { type: "fill", q: "23. In wired networks, cables and wires plug into ____________ on devices.", ans: "ports" },
+            { type: "fill", q: "24. The company that provides internet connection to homes is abbreviated as ____________.", ans: "isp" },
+            { type: "fill", q: "25. A ____________ converts signals from an ISP into digital signals used by computers.", ans: "modem" },
+
+            // Matching / Definition Questions
+            { q: "26. [Concept Match] Artificial Intelligence (AI) refers to:", opts: ["A device providing internet connection at home.", "Groups of computer devices connected together.", "Applications that simulate human thinking and problem-solving.", "Holes where cables plug in."], ans: 2 },
+            { q: "27. [Concept Match] A Router is:", opts: ["A device that connects a local network to the internet.", "An intelligent device that routes data only inside LAN.", "A physical port on a laptop.", "A type of wireless cable."], ans: 0 },
+            { q: "28. [Concept Match] A Switch is:", opts: ["A physical hole where ethernet cables connect.", "An intelligent device that sends data directly to a specific device.", "A global satellite system.", "An application that mimics human speech."], ans: 1 },
+            { q: "29. [Concept Match] Computer Networks are:", opts: ["Groups of connected devices sharing data and resources.", "Single isolated computers with no connection.", "Power cables supplying electricity.", "Antivirus software programs."], ans: 0 },
+            { q: "30. [Concept Match] A Port is:", opts: ["A group of wireless computers.", "An Internet Service Provider company.", "A designated socket/hole on a device where cables are plugged in.", "A search engine on the web."], ans: 2 }
+        ];
+
+        let currentIdx = 0;
+        let currentScore = 0;
+
+        function startQuiz() {
+            initAudio();
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            currentIdx = 0;
+            currentScore = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const qData = questions[currentIdx];
+            
+            document.getElementById("q-counter").innerText = `Question ${currentIdx + 1}/${questions.length}`;
+            document.getElementById("score-counter").innerText = `Score: ${currentScore}`;
+            document.getElementById("question-text").innerText = qData.q;
+            
+            const progressPercent = ((currentIdx + 1) / questions.length) * 100;
+            document.getElementById("progress-bar").style.width = `${progressPercent}%`;
+
+            const box = document.getElementById("options-box");
+            const fb = document.getElementById("feedback-msg");
+            const btnNext = document.getElementById("btn-next");
+
+            box.innerHTML = "";
+            fb.innerText = "";
+            fb.className = "min-h-[2rem] text-center font-bold text-sm sm:text-base mb-4 transition-all";
+            btnNext.classList.add("hidden");
+
+            if (qData.type === "fill") {
+                box.innerHTML = `
+                    <div class="space-y-3">
+                        <input type="text" id="fill-input" placeholder="Type your answer here..." 
+                            class="w-full p-3.5 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none text-base transition-all" 
+                            autocomplete="off" autocorrect="off" autocapitalize="none">
+                        <button onclick="checkFill('${qData.ans}')" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all active:scale-98">
+                            Submit Answer
+                        </button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const input = document.getElementById("fill-input");
+                    if (input) {
+                        input.focus();
+                        input.addEventListener("keypress", function(e) {
+                            if (e.key === "Enter") {
+                                checkFill(qData.ans);
+                            }
+                        });
+                    }
+                }, 50);
+            } else {
+                qData.opts.forEach((optText, index) => {
+                    const btn = document.createElement("button");
+                    btn.className = "btn-option w-full text-left p-3.5 border-2 border-slate-200 rounded-xl font-medium text-slate-700 text-sm sm:text-base bg-white shadow-sm flex items-center justify-between";
+                    btn.innerHTML = `<span>${optText}</span> <span class="opt-icon opacity-0">✓</span>`;
+                    btn.onclick = () => checkChoice(index, qData.ans, btn);
+                    box.appendChild(btn);
+                });
+            }
+        }
+
+        function checkChoice(selectedIndex, correctIndex, selectedBtn) {
+            const allBtns = document.querySelectorAll("#options-box .btn-option");
+            allBtns.forEach(btn => btn.disabled = true);
+
+            const fb = document.getElementById("feedback-msg");
+
+            if (selectedIndex === correctIndex) {
+                selectedBtn.classList.add("correct");
+                selectedBtn.querySelector(".opt-icon").classList.remove("opacity-0");
+                fb.innerText = "✨ Correct! Excellent job!";
+                fb.classList.add("text-emerald-600");
+                playSound(true);
+                currentScore++;
+            } else {
+                selectedBtn.classList.add("incorrect");
+                allBtns[correctIndex].classList.add("correct");
+                allBtns[correctIndex].querySelector(".opt-icon").classList.remove("opacity-0");
+                fb.innerText = "❌ Incorrect. The correct answer is highlighted above.";
+                fb.classList.add("text-rose-600");
+                playSound(false);
+            }
+
+            document.getElementById("score-counter").innerText = `Score: ${currentScore}`;
+            document.getElementById("btn-next").classList.remove("hidden");
+        }
+
+        function checkFill(correctAnswer) {
+            const input = document.getElementById("fill-input");
+            if (!input || input.disabled) return;
+
+            const userVal = input.value.trim().toLowerCase();
+            if (!userVal) return;
+
+            input.disabled = true;
+            const fb = document.getElementById("feedback-msg");
+
+            if (userVal === correctAnswer.toLowerCase()) {
+                input.classList.add("border-emerald-500", "bg-emerald-50", "text-emerald-900", "font-bold");
+                fb.innerText = "✨ Correct Answer!";
+                fb.classList.add("text-emerald-600");
+                playSound(true);
+                currentScore++;
+            } else {
+                input.classList.add("border-rose-500", "bg-rose-50", "text-rose-900");
+                fb.innerText = `❌ Wrong. The correct answer is: "${correctAnswer}"`;
+                fb.classList.add("text-rose-600");
+                playSound(false);
+            }
+
+            document.getElementById("score-counter").innerText = `Score: ${currentScore}`;
+            document.getElementById("btn-next").classList.remove("hidden");
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+
+            const finalScoreElem = document.getElementById("final-score");
+            const finalPctElem = document.getElementById("final-percentage");
+            const statusMsgElem = document.getElementById("final-status-msg");
+            const iconElem = document.getElementById("result-icon");
+
+            const pct = Math.round((currentScore / questions.length) * 100);
+
+            finalScoreElem.innerText = `${currentScore} / ${questions.length}`;
+            finalPctElem.innerText = `Score Percentage: ${pct}%`;
+
+            if (pct >= 85) {
+                iconElem.innerText = "🌟";
+                statusMsgElem.innerText = "Outstanding Performance! You mastered ICT Grade 6!";
+                statusMsgElem.className = "text-emerald-600 font-bold mb-6 text-base";
+            } else if (pct >= 65) {
+                iconElem.innerText = "👍";
+                statusMsgElem.innerText = "Good job! You have a solid grasp of the concepts.";
+                statusMsgElem.className = "text-blue-600 font-bold mb-6 text-base";
+            } else {
+                iconElem.innerText = "📚";
+                statusMsgElem.innerText = "Keep practicing! Review the concepts and try again.";
+                statusMsgElem.className = "text-amber-600 font-bold mb-6 text-base";
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById("result-screen").classList.add("hidden");
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
